@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>ZapLink Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="container">
+        <section class="card">
+            <h1>ZapLink Pro</h1>
+            <p class="sub">Gere seu link grátis e desbloqueie recursos profissionais.</p>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="formulario">
+                <label>Nome</label>
+                <input type="text" name="name" value="{{ name }}" placeholder="Seu nome">
+
+                <label>E-mail</label>
+                <input type="email" name="email" value="{{ email }}" placeholder="seuemail@exemplo.com">
+
+                <label>Código do país</label>
+                <input type="text" name="codigo_pais" value="{{ codigo_pais }}" placeholder="55">
+
+                <label>Número</label>
+                <input type="text" name="numero" value="{{ numero }}" placeholder="11999998888">
+
+                <label>Mensagem pronta</label>
+                <textarea name="mensagem" placeholder="Olá! Gostaria de mais informações.">{{ mensagem }}</textarea>
+
+                <button type="submit">Gerar link</button>
+            </form>
+
+            {% if erro %}
+                <div class="erro">{{ erro }}</div>
+            {% endif %}
+
+            {% if link_gerado %}
+                <div class="resultado">
+                    <h2>Seu link</h2>
+                    <div class="link-box" id="linkGerado">{{ link_gerado }}</div>
+
+                    <div class="acoes">
+                        <a href="{{ link_gerado }}" target="_blank" class="botao verde">Abrir no WhatsApp</a>
+                        <button type="button" class="botao escuro" onclick="copiarLink()">Copiar link</button>
+                    </div>
+
+                    <div class="premium-box">
+                        <div class="premium-top">
+                            <div>
+                                <h3>Recursos Pro</h3>
+                                <p>QR Code, download e outros recursos profissionais.</p>
+                            </div>
+                            <span class="tag">
+                                {% if premium_mode %}PRO ATIVO{% else %}PRO{% endif %}
+                            </span>
+                        </div>
+
+                        {% if premium_mode and qrcode_base64 %}
+                            <div class="qrcode-area">
+                                <img src="data:image/png;base64,{{ qrcode_base64 }}" class="qrcode-img" alt="QR Code">
+                            </div>
+                        {% else %}
+                            <div class="bloqueado">
+                                <p>Assine o plano Pro por <strong>R$ 9,90</strong> e libere automaticamente por 30 dias.</p>
+                                <form method="POST" action="{{ url_for('create_checkout') }}">
+                                    <button type="submit" class="botao laranja">Quero o Pro</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <script>
+        function copiarLink() {
+            const texto = document.getElementById("linkGerado").innerText;
+            navigator.clipboard.writeText(texto)
+                .then(() => alert("Link copiado com sucesso!"))
+                .catch(() => alert("Não foi possível copiar o link."));
+        }
+    </script>
+</body>
+</html>

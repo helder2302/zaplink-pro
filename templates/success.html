@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagamento recebido</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="container">
+        <section class="card">
+            <h1>Pagamento recebido</h1>
+            {% if premium_mode %}
+                <p class="sub">Seu plano Pro já foi ativado. Volte para a página inicial e gere seu link com QR Code.</p>
+            {% else %}
+                <p class="sub">Recebemos seu retorno. Se o pagamento acabou de acontecer, o webhook pode levar alguns instantes para ativar o Pro.</p>
+            {% endif %}
+            <a href="{{ url_for('index') }}" class="botao verde">Voltar ao início</a>
+        </section>
+    </main>
+</body>
+</html>
